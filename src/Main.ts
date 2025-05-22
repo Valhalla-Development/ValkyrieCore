@@ -2,12 +2,30 @@ import { dirname, importx } from '@discordx/importer';
 import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
+import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
 import { handleError } from './utils/Util.js';
 
 /**
- * The Discord.js client instance.
+ * Extends the Discord.js Client to include cluster functionality
+ * This allows each shard to communicate with the cluster manager
  */
-const client = new Client({
+interface ValkyrieClient extends Client {
+    cluster: ClusterClient<Client>;
+}
+
+/**
+ * The Discord.js client instance with sharding support.
+ *
+ * Sharding Configuration:
+ * - shards: Uses getInfo().SHARD_LIST to get the list of shards this instance should handle
+ * - shardCount: Uses getInfo().TOTAL_SHARDS to know the total number of shards
+ *
+ * Each instance of the bot (cluster) will handle a subset of the total shards,
+ * as configured in Cluster.ts with shardsPerClusters
+ */
+export const client = new Client({
+    shards: getInfo().SHARD_LIST,
+    shardCount: getInfo().TOTAL_SHARDS,
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
@@ -15,7 +33,7 @@ const client = new Client({
     ],
     silent: true,
     botGuilds: process.env.GUILDS ? process.env.GUILDS.split(',') : undefined,
-});
+}) as ValkyrieClient;
 
 /**
  * Handles unhandled rejections by logging the error and sending an embed to a designated logging channel, if enabled.
@@ -90,6 +108,8 @@ async function run() {
     const loadSequentially = async () => {
         try {
             await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
+            await sleep(time);
+            client.cluster = new ClusterClient(client);
             await sleep(time);
             await client.login(process.env.BOT_TOKEN as string);
         } catch (error) {
