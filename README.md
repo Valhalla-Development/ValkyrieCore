@@ -42,8 +42,8 @@ This project provides a solid foundation for creating a Discord bot using [disco
       <p>Track command usage with formatted embeds sent to your designated channel.</p>
     </td>
     <td width="50%">
-      <h3>📚 Thorough Documentation</h3>
-      <p>Well-documented code with TSDoc comments for easy understanding and customization.</p>
+      <h3>🔄 Hybrid Sharding</h3>
+      <p>Efficient sharding system using worker threads for better scalability and performance.</p>
     </td>
   </tr>
   <tr>
