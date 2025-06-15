@@ -148,7 +148,7 @@ export async function handleError(client: Client, error: unknown): Promise<void>
  */
 export async function loadMongoEvents(): Promise<void> {
     try {
-        await mongoose.connect(`${process.env.MONOG_URI}`);
+        await mongoose.connect(`${process.env.MONGO_URI}`);
         console.log('[Database Status]: Connected.'.green.bold);
     } catch (err) {
         console.error(
