@@ -10,7 +10,6 @@ import type { Client } from 'discordx';
 import '@colors/colors';
 import mongoose from 'mongoose';
 
-
 /**
  * Capitalises the first letter of each word in a string.
  * @param str - The string to be capitalised.
