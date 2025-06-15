@@ -107,7 +107,10 @@ async function run() {
      */
     const loadSequentially = async () => {
         try {
-            await loadMongoEvents();
+            if (process.env.MONGO_URI) {
+                await loadMongoEvents();
+                await sleep(time);
+            }
             await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
             await sleep(time);
             client.cluster = new ClusterClient(client);
