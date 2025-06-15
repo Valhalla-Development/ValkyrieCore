@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 /**
- * Represents a schema for storing the Logging module state data
+ * Represents an example schema
  */
 const Example = new Schema({
     GuildId: { type: String, unique: true },
