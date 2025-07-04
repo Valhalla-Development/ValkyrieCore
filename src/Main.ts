@@ -3,7 +3,7 @@ import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
-import { handleError, loadMongoEvents } from './utils/Util.js';
+import { handleError } from './utils/Util.js';
 
 /**
  * Extends the Discord.js Client to include cluster functionality
@@ -102,15 +102,11 @@ async function run() {
     const time = 200;
 
     /**
-     * Loads the Mongo events, imports the commands and events, and logs in the client.
+     * Imports the commands and events, and logs in the client.
      * @returns A Promise that resolves with void when everything is loaded sequentially.
      */
     const loadSequentially = async () => {
         try {
-            if (process.env.MONGO_URI) {
-                await loadMongoEvents();
-                await sleep(time);
-            }
             await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
             await sleep(time);
             client.cluster = new ClusterClient(client);
