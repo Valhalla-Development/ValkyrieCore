@@ -1,10 +1,10 @@
 import {
     ActivityType,
     ChannelType,
+    codeBlock,
     EmbedBuilder,
     type Message,
     type TextChannel,
-    codeBlock,
 } from 'discord.js';
 import type { Client } from 'discordx';
 import '@colors/colors';
