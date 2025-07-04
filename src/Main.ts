@@ -36,12 +36,14 @@ const clientConfig = {
     ],
     silent: true,
     botGuilds: process.env.GUILDS ? process.env.GUILDS.split(',') : undefined,
-    ...(isDev ? {} : {
-        shards: getInfo().SHARD_LIST,
-        shardCount: getInfo().TOTAL_SHARDS,
-    }),
+    ...(isDev
+        ? {}
+        : {
+              shards: getInfo().SHARD_LIST,
+              shardCount: getInfo().TOTAL_SHARDS,
+          }),
 };
-    
+
 export const client = new Client(clientConfig) as ValkyrieClient;
 
 /**
