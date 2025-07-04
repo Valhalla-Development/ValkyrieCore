@@ -1,6 +1,6 @@
 {
   "name": "valkyriecore",
-  "version": "1.2.0",
+  "version": "1.2.4",
   "description": "This project provides a template for creating a Discord bot using discordx and discord.js v14.",
   "license": "GPL-3.0-or-later",
   "author": "Ragnar Lothbrok <ragnarlothbrokjr@proton.me>",
