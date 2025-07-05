@@ -80,14 +80,6 @@ client.on('error', async (error: unknown) => {
  * @throws An Error if any required environment variables are missing or invalid.
  */
 async function run() {
-    // Config validation happens automatically when importing
-    // Check for required logging channels if logging is enabled
-    if (config.ENABLE_LOGGING && !config.ERROR_LOGGING_CHANNEL && !config.COMMAND_LOGGING_CHANNEL) {
-        throw new Error(
-            'ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are required when logging is enabled.'
-        );
-    }
-
     /**
      * Delays the execution of the function for a specified time in milliseconds.
      * @param ms - The time in milliseconds to delay the execution of the function.
