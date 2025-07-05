@@ -13,7 +13,7 @@
     "lint": "tsc --noEmit -p tsconfig.json && biome check --files-ignore-unknown=true --diagnostic-level=error --no-errors-on-unmatched src",
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true src",
     "dev": "NODE_ENV=development bun --watch src/Main.ts",
-    "start": "bun src/Cluster.ts",
+    "start": "NODE_ENV=production bun src/Cluster.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -25,7 +25,8 @@
     "discordx": "^11.12.5",
     "dotenv": "^17.0.1",
     "moment": "^2.30.1",
-    "systeminformation": "^5.27.7"
+    "systeminformation": "^5.27.7",
+    "zod": "^3.25.74"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
