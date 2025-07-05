@@ -3,9 +3,8 @@ import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
+import { config, isDev } from './config/Config.js';
 import { handleError } from './utils/Util.js';
-
-const isDev = process.env.NODE_ENV === 'development';
 
 /**
  * Extends the Discord.js Client to include cluster functionality
@@ -35,7 +34,7 @@ const clientConfig = {
         IntentsBitField.Flags.MessageContent,
     ],
     silent: true,
-    botGuilds: process.env.GUILDS ? process.env.GUILDS.split(',') : undefined,
+    botGuilds: config.GUILDS,
     ...(isDev
         ? {}
         : {
@@ -81,21 +80,9 @@ client.on('error', async (error: unknown) => {
  * @throws An Error if any required environment variables are missing or invalid.
  */
 async function run() {
-    const missingVar = (v: string) => `The ${v} environment variable is missing.`;
-
-    const required = ['BOT_TOKEN'];
-
-    for (const v of required) {
-        if (!process.env[v]) {
-            throw new Error(missingVar(v));
-        }
-    }
-
-    if (
-        process.env.ENABLE_LOGGING?.toLowerCase() === 'true' &&
-        !process.env.ERROR_LOGGING_CHANNEL &&
-        !process.env.COMMAND_LOGGING_CHANNEL
-    ) {
+    // Config validation happens automatically when importing
+    // Check for required logging channels if logging is enabled
+    if (config.ENABLE_LOGGING && !config.ERROR_LOGGING_CHANNEL && !config.COMMAND_LOGGING_CHANNEL) {
         throw new Error(
             'ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are required when logging is enabled.'
         );
@@ -124,7 +111,7 @@ async function run() {
                 client.cluster = new ClusterClient(client);
                 await sleep(time);
             }
-            await client.login(process.env.BOT_TOKEN as string);
+            await client.login(config.BOT_TOKEN);
         } catch (error) {
             console.error('An error occurred while initializing the bot:', error);
         }

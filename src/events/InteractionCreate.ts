@@ -1,6 +1,7 @@
 import { ChannelType, codeBlock, EmbedBuilder } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import moment from 'moment';
+import { config } from '../config/Config.js';
 import { handleError, reversedRainbow } from '../utils/Util.js';
 
 @Discord()
@@ -32,7 +33,7 @@ export class InteractionCreate {
             console.error(`Error executing interaction: ${err}`);
         }
 
-        if (process.env.ENABLE_LOGGING?.toLowerCase() === 'true') {
+        if (config.ENABLE_LOGGING) {
             if (!interaction.isChatInputCommand()) {
                 return;
             }
@@ -67,8 +68,8 @@ export class InteractionCreate {
                 );
 
             // Channel logging
-            if (process.env.COMMAND_LOGGING_CHANNEL) {
-                const channel = client.channels.cache.get(process.env.COMMAND_LOGGING_CHANNEL);
+            if (config.COMMAND_LOGGING_CHANNEL) {
+                const channel = client.channels.cache.get(config.COMMAND_LOGGING_CHANNEL);
                 if (channel?.type === ChannelType.GuildText) {
                     channel.send({ embeds: [logEmbed] }).catch(console.error);
                 }
