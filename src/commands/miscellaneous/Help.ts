@@ -21,8 +21,7 @@ import { capitalise, deletableCheck, getCommandIds } from '../../utils/Util.js';
 
 // Map categories to their emojis
 const categoryEmojis: Record<string, string> = {
-    miscellaneous: '🔧',
-    depression: '💙',
+    miscellaneous: '🔧'
 };
 
 /**
@@ -198,9 +197,8 @@ async function handleSelectMenu(
 
         const errorContainer = new ContainerBuilder().addTextDisplayComponents(errorText);
         await interaction.reply({
-            ephemeral: true,
             components: [errorContainer],
-            flags: MessageFlags.IsComponentsV2,
+            flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
         });
         return;
     }
