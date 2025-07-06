@@ -21,7 +21,7 @@ import { capitalise, deletableCheck, getCommandIds } from '../../utils/Util.js';
 
 // Map categories to their emojis
 const categoryEmojis: Record<string, string> = {
-    miscellaneous: '🔧'
+    miscellaneous: '🔧',
 };
 
 /**
@@ -52,7 +52,11 @@ function getCategoriesAsOptions(): SelectMenuComponentOptionData[] {
 /**
  * Build the formatted command list for a specific category
  */
-async function buildCommandsList(category: string, client: Client): Promise<string> {
+async function buildCommandsList(
+    category: string,
+    client: Client,
+    guildId: string
+): Promise<string> {
     // Filter commands by category, excluding the help command itself
     const filteredCommands = MetadataStorage.instance.applicationCommands.filter(
         (cmd: DApplicationCommand & ICategory) =>
@@ -60,7 +64,7 @@ async function buildCommandsList(category: string, client: Client): Promise<stri
             cmd.name?.toLowerCase() !== 'help'
     );
 
-    const commandIds = await getCommandIds(client);
+    const commandIds = await getCommandIds(client, guildId);
     return filteredCommands
         .map((cmd) => {
             const commandId = commandIds[cmd.name];
@@ -76,6 +80,7 @@ async function buildCommandsList(category: string, client: Client): Promise<stri
  */
 async function buildHelpContainer(
     client: Client,
+    guildId: string,
     options: {
         category?: string;
         selectMenu?: StringSelectMenuBuilder;
@@ -112,7 +117,7 @@ async function buildHelpContainer(
             .addActionRowComponents((row) => row.addComponents(selectMenu!));
     } else if (category) {
         // Category view - show commands for the selected category
-        const commandsList = await buildCommandsList(category, client);
+        const commandsList = await buildCommandsList(category, client, guildId);
         const commandsText = new TextDisplayBuilder().setContent(
             [
                 `## ${getCategoryEmoji(category)} **${capitalise(category)} Commands**`,
@@ -154,7 +159,9 @@ async function handleHelp(
         }
 
         const selectedCategory = cats[0]!.value.replace(/^help-/, '').toLowerCase();
-        const container = await buildHelpContainer(client, { category: selectedCategory });
+        const container = await buildHelpContainer(client, interaction.guildId!, {
+            category: selectedCategory,
+        });
 
         await interaction.reply({
             components: [container],
@@ -162,7 +169,7 @@ async function handleHelp(
         });
     } else {
         // Multiple categories
-        const container = await buildHelpContainer(client, {
+        const container = await buildHelpContainer(client, interaction.guildId!, {
             selectMenu,
             showCategorySelector: true,
         });
@@ -210,7 +217,7 @@ async function handleSelectMenu(
 
     // Extract the category name from the dropdown value
     const selectedCategory = selectedValue.replace(/^help-/, '').toLowerCase();
-    const container = await buildHelpContainer(client, {
+    const container = await buildHelpContainer(client, interaction.guildId!, {
         category: selectedCategory,
         selectMenu,
     });
