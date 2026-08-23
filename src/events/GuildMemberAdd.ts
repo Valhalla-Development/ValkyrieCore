@@ -1,4 +1,5 @@
-import { type Client, Discord, Once } from 'discordx';
+import { Events } from 'discord.js';
+import { type Client, Discord, On } from 'discordx';
 import { updateStatus } from '../utils/Util.js';
 
 /**
@@ -11,7 +12,7 @@ export class GuildMemberAdd {
      * @param client - The Discord client.
      * @returns void
      */
-    @Once({ event: 'guildMemberAdd' })
+    @On({ event: Events.GuildMemberAdd })
     onGuildMemberAdd(client: Client) {
         // Set activity
         updateStatus(client);
