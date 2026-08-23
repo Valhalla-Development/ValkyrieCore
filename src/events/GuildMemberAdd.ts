@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { type Client, Discord, On } from 'discordx';
+import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import { updateStatus } from '../utils/Util.js';
 
 /**
@@ -9,11 +9,11 @@ import { updateStatus } from '../utils/Util.js';
 export class GuildMemberAdd {
     /**
      * Executes when the GuildMemberAdd event is emitted.
+     * @param _payload - Event arguments from discordx.
      * @param client - The Discord client.
-     * @returns void
      */
     @On({ event: Events.GuildMemberAdd })
-    onGuildMemberAdd(client: Client) {
+    onGuildMemberAdd(_payload: ArgsOf<'guildMemberAdd'>, client: Client) {
         // Set activity
         updateStatus(client);
     }
