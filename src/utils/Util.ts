@@ -206,11 +206,42 @@ export async function getCommandIds(
     return Object.fromEntries(commandIds);
 }
 
+const STATUS_INTERVAL_MS = 15_000;
+let lastStatusAt = 0;
+let statusScheduled = false;
+let queuedClient: Client | undefined;
+
 /**
  * Updates the status of the Discord client with information about guilds and users.
  * @param client - The Discord client instance.
  */
 export function updateStatus(client: Client) {
+    queuedClient = client;
+    const remaining = STATUS_INTERVAL_MS - (Date.now() - lastStatusAt);
+
+    if (remaining > 0) {
+        if (statusScheduled) {
+            return;
+        }
+        statusScheduled = true;
+        setTimeout(() => {
+            statusScheduled = false;
+            flushStatus();
+        }, remaining);
+        return;
+    }
+
+    flushStatus();
+}
+
+function flushStatus() {
+    const client = queuedClient;
+    queuedClient = undefined;
+    if (!client) {
+        return;
+    }
+
+    lastStatusAt = Date.now();
     client.user?.setActivity({
         name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
             ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
