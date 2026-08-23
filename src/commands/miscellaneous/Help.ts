@@ -222,14 +222,8 @@ async function handleSelectMenu(
 @Discord()
 @Category('Miscellaneous')
 export class Help {
-    constructor() {
-        // Bind methods
-        this.help = this.help.bind(this);
-        this.handle = this.handle.bind(this);
-    }
-
     /**
-     * Create the dropdown menu with current categories (MetadataStorage is empty during constructor)
+     * Create the dropdown menu with current categories.
      */
     private createSelectMenu(): StringSelectMenuBuilder {
         return new StringSelectMenuBuilder()
