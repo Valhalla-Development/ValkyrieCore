@@ -19,6 +19,7 @@ import {
 } from 'discord.js';
 import type { Client } from 'discordx';
 import { config } from '../config/Config.js';
+import { log } from './Console.js';
 
 /**
  * Capitalises the first letter of each word in a string.
@@ -34,7 +35,7 @@ export const capitalise = (str: string): string => str.replace(/\b\w/g, (c) => c
  */
 export function deletableCheck(message: Message, time: number): void {
     setTimeout(() => {
-        message.delete().catch((error) => console.error('Error deleting message:', error));
+        message.delete().catch((error) => log.error('Failed to delete message', error));
     }, time);
 }
 
@@ -65,7 +66,7 @@ export async function messageDelete(message: Message, time: number): Promise<voi
             throw error;
         });
     } catch (error) {
-        console.error('Error: Failed to delete the message:', error);
+        log.error('Failed to delete the message', error);
         throw error;
     }
 }
@@ -121,7 +122,7 @@ export async function ValkyrieComponent(
                 : MessageFlags.IsComponentsV2,
         });
     } catch (error) {
-        console.error('Error sending component response:', error);
+        log.error('Failed to send component response', error);
     }
 }
 
@@ -185,7 +186,7 @@ export async function getCommandIds(
                 commandIds.set(cmd.name, cmd.id);
             }
         } catch (error) {
-            console.warn('Could not fetch global commands:', error);
+            log.warn('Could not fetch global commands', error);
         }
     }
 
@@ -198,7 +199,7 @@ export async function getCommandIds(
                 commandIds.set(cmd.name, cmd.id);
             }
         } catch (error) {
-            console.warn(`Could not fetch commands for guild ${guild.name}:`, error);
+            log.warn(`Could not fetch commands for guild ${guild.name}`, error);
         }
     }
 
@@ -266,7 +267,7 @@ export async function getTextChannel(
             return fetched;
         }
     } catch (error) {
-        console.error(`Failed to fetch channel: ${channelId}`, error);
+        log.error(`Failed to fetch channel ${channelId}`, error);
     }
 
     return undefined;
@@ -278,14 +279,10 @@ export async function getTextChannel(
  * @param error - The unknown error
  */
 export async function handleError(client: Client, error: unknown): Promise<void> {
-    // Properly log the raw error for debugging
-    console.error('Raw error:', error);
-
-    // Create an error object if we received something else
     const normalizedError = error instanceof Error ? error : new Error(String(error));
-
-    // Ensure we have a stack trace
     const errorStack = normalizedError.stack || normalizedError.message || String(error);
+
+    log.error(normalizedError.message, normalizedError);
 
     if (!(config.ENABLE_LOGGING && config.ERROR_LOGGING_CHANNEL)) {
         return;
@@ -308,7 +305,7 @@ export async function handleError(client: Client, error: unknown): Promise<void>
     try {
         const channel = await getTextChannel(client, config.ERROR_LOGGING_CHANNEL!);
         if (!channel) {
-            console.error(`Invalid logging channel: ${config.ERROR_LOGGING_CHANNEL}`);
+            log.error(`Invalid logging channel ${config.ERROR_LOGGING_CHANNEL}`);
             return;
         }
 
@@ -330,6 +327,6 @@ export async function handleError(client: Client, error: unknown): Promise<void>
             flags: MessageFlags.IsComponentsV2,
         });
     } catch (sendError) {
-        console.error('Failed to send the error component message:', sendError);
+        log.error('Failed to send the error log', sendError);
     }
 }

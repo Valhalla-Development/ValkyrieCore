@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { log } from '../utils/Console.js';
 
 // Helper transforms for common patterns
 const stringToBoolean = (val: string): boolean => val.toLowerCase() === 'true';
@@ -33,8 +34,8 @@ try {
 
     // Validate logging channels required when logging is enabled
     if (config.ENABLE_LOGGING && !config.ERROR_LOGGING_CHANNEL && !config.COMMAND_LOGGING_CHANNEL) {
-        console.warn(
-            '⚠️  ENABLE_LOGGING is true but ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are missing. Logging will be disabled.'
+        log.warn(
+            'ENABLE_LOGGING is true but ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are missing. Logging will be disabled.'
         );
         config.ENABLE_LOGGING = false;
     }

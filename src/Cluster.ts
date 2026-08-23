@@ -1,6 +1,7 @@
 import { dirname } from '@discordx/importer';
 import { ClusterManager } from 'discord-hybrid-sharding';
 import { config } from './config/Config.js';
+import { log } from './utils/Console.js';
 
 // Get the directory path of the current module
 const dir = dirname(import.meta.url);
@@ -28,7 +29,7 @@ const manager = new ClusterManager(`${dir}/Main.ts`, {
 
 // Event fired when a new cluster is created
 manager.on('clusterCreate', (cluster) => {
-    console.log(`[Cluster ${cluster.id}] Initialized successfully`);
+    log.ok(`[Cluster ${cluster.id}] Initialized successfully`);
 });
 
 // Spawns all clusters and shards

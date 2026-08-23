@@ -3,6 +3,7 @@ import { IntentsBitField } from 'discord.js';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
 import { Client } from 'discordx';
 import { config } from './config/Config.js';
+import { log } from './utils/Console.js';
 import { handleError } from './utils/Util.js';
 
 /**
@@ -76,7 +77,6 @@ process.on('uncaughtException', async (error) => {
  * @returns Promise that resolves when error is handled
  */
 client.on('error', async (error: unknown) => {
-    console.error('Client error:', error);
     await handleError(client, error);
 });
 
@@ -112,7 +112,7 @@ async function run() {
             }
             await client.login(config.BOT_TOKEN);
         } catch (error) {
-            console.error('An error occurred while initializing the bot:', error);
+            log.error('Failed to start the bot', error);
         }
     };
     await loadSequentially();
