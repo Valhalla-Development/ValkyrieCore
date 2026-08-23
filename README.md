@@ -33,7 +33,7 @@ This project provides a solid foundation for creating a Discord bot using [disco
     </td>
     <td width="50%">
       <h3>🛡️ Robust Error Handling</h3>
-      <p>Comprehensive error tracking with console and Discord channel logging.</p>
+      <p>Error tracking with console output and Components V2 cards in a Discord channel.</p>
     </td>
   </tr>
   <tr>
@@ -53,7 +53,7 @@ This project provides a solid foundation for creating a Discord bot using [disco
     </td>
     <td width="50%">
       <h3>❓ Interactive Help Menu</h3>
-      <p>Dynamic help command with slash command links for intuitive user experience.</p>
+      <p>Category dropdown when multiple command groups exist, with slash command links.</p>
     </td>
   </tr>
 </table>
@@ -86,7 +86,6 @@ This project provides a solid foundation for creating a Discord bot using [disco
 
 5. Rename `.env.example` to `.env` and fill in your bot's details:
    - [Bot Token Guide](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
-   - [Owner ID Guide](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
 
 6. Install dependencies:
     ```bash
@@ -97,6 +96,10 @@ This project provides a solid foundation for creating a Discord bot using [disco
     ```bash
     bun start
     ```
+    For local watch without sharding:
+    ```bash
+    bun run dev
+    ```
 
 ## 📸 Screenshots
 
@@ -106,21 +109,6 @@ This project provides a solid foundation for creating a Discord bot using [disco
       <td align="center" width="50%">
         <strong>Bot Info</strong><br>
         <img src="https://share.valhalladev.org/u/BotStartupInfo.png" width="400px" alt="Bot Info">
-      </td>
-      <td align="center" width="50%">
-        <strong>Error Handling</strong><br>
-        <img src="https://share.valhalladev.org/u/BotErrorHandler.png" width="400px" alt="Error Handler">
-      </td>
-    </tr>
-    <tr>
-      <td align="center" width="50%">
-        <strong>Command Logging</strong><br>
-        <img src="https://share.valhalladev.org/u/BotCommandLogging.png" width="400px" alt="Command Logger">
-      </td>
-      <td align="center" width="50%">
-        <strong>Help Command</strong><br>
-        <em>Automatically enables pagination when multiple command categories exist</em><br>
-        <img src="https://share.valhalladev.org/u/BotHelpCommandDiscord.png" width="400px" alt="Help Command">
       </td>
     </tr>
   </table>
@@ -145,7 +133,7 @@ We welcome contributions to improve this template! If you'd like to contribute:
    ```
 5. Open a Pull Request against the main repository's `main` branch
 
-Please ensure your code adheres to the project's coding standards and include tests for new features or bug fixes where applicable. We appreciate detailed descriptions in your Pull Request to help with the review process.
+Please run `bun run lint` before opening a Pull Request. We appreciate detailed descriptions to help with the review process.
 
 ## 📜 License
 
