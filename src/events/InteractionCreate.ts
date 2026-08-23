@@ -2,7 +2,7 @@ import { ChannelType, codeBlock, Events, MessageFlags } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import moment from 'moment';
 import { config } from '../config/Config.js';
-import { handleError, reversedRainbow, ValkyrieContainer } from '../utils/Util.js';
+import { getTextChannel, handleError, reversedRainbow, ValkyrieContainer } from '../utils/Util.js';
 
 @Discord()
 export class InteractionCreate {
@@ -69,8 +69,8 @@ export class InteractionCreate {
 
             // Channel logging
             if (config.COMMAND_LOGGING_CHANNEL) {
-                const channel = client.channels.cache.get(config.COMMAND_LOGGING_CHANNEL);
-                if (channel?.type === ChannelType.GuildText) {
+                const channel = await getTextChannel(client, config.COMMAND_LOGGING_CHANNEL);
+                if (channel) {
                     channel
                         .send({
                             allowedMentions: { parse: [] },

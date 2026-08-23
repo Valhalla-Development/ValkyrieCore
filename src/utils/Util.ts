@@ -232,6 +232,30 @@ export const reversedRainbow = (str: string): string => {
 };
 
 /**
+ * Resolves a guild text channel by ID, fetching it if it is not in cache.
+ */
+export async function getTextChannel(
+    client: Client,
+    channelId: string
+): Promise<TextChannel | undefined> {
+    const cached = client.channels.cache.get(channelId);
+    if (cached?.type === ChannelType.GuildText) {
+        return cached;
+    }
+
+    try {
+        const fetched = await client.channels.fetch(channelId);
+        if (fetched?.type === ChannelType.GuildText) {
+            return fetched;
+        }
+    } catch (error) {
+        console.error(`Failed to fetch channel: ${channelId}`, error);
+    }
+
+    return undefined;
+}
+
+/**
  * Handles given error by logging it and optionally sending it to a Discord channel.
  * @param client - The Discord client instance
  * @param error - The unknown error
@@ -265,11 +289,8 @@ export async function handleError(client: Client, error: unknown): Promise<void>
     }
 
     try {
-        const channel = client.channels.cache.get(config.ERROR_LOGGING_CHANNEL!) as
-            | TextChannel
-            | undefined;
-
-        if (!channel || channel.type !== ChannelType.GuildText) {
+        const channel = await getTextChannel(client, config.ERROR_LOGGING_CHANNEL!);
+        if (!channel) {
             console.error(`Invalid logging channel: ${config.ERROR_LOGGING_CHANNEL}`);
             return;
         }
