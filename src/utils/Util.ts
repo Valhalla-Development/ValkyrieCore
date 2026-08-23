@@ -8,6 +8,7 @@ import {
     type Message,
     MessageFlags,
     type ModalSubmitInteraction,
+    PermissionsBitField,
     SectionBuilder,
     SeparatorSpacingSize,
     type StringSelectMenuInteraction,
@@ -36,6 +37,38 @@ export function deletableCheck(message: Message, time: number): void {
     setTimeout(() => {
         message.delete().catch((error) => console.error('Error deleting message:', error));
     }, time);
+}
+
+/**
+ * Deletes a message after a delay if the bot has Manage Messages and the message is deletable.
+ * Ignores Unknown Message (10008) races. Use `deletableCheck` to delete the bot's own messages.
+ */
+export async function messageDelete(message: Message, time: number): Promise<void> {
+    try {
+        const botMember = message.guild?.members.cache.get(message.client.user.id);
+        if (!botMember?.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+            return;
+        }
+
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, time);
+        });
+
+        if (!message.deletable) {
+            return;
+        }
+
+        await message.delete().catch((error: unknown) => {
+            const err = error as { code?: number; message?: string };
+            if (err.code === 10_008 || err.message?.includes('Unknown Message')) {
+                return;
+            }
+            throw error;
+        });
+    } catch (error) {
+        console.error('Error: Failed to delete the message:', error);
+        throw error;
+    }
 }
 
 /**
