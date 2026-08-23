@@ -24,9 +24,6 @@ const configSchema = z.object({
         .string()
         .optional()
         .transform((val) => (val ? stringToArray(val) : undefined)),
-
-    // Environment (defaults to development)
-    NODE_ENV: z.enum(['development', 'production']).default('development'),
 });
 
 // Parse config with error handling
@@ -54,4 +51,3 @@ try {
 }
 
 export { config };
-export const isDev = config.NODE_ENV === 'development';

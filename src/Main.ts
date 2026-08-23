@@ -3,7 +3,7 @@ import { IntentsBitField } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
-import { config, isDev } from './config/Config.js';
+import { config } from './config/Config.js';
 import { handleError } from './utils/Util.js';
 
 /**
@@ -11,7 +11,7 @@ import { handleError } from './utils/Util.js';
  * This allows each shard to communicate with the cluster manager
  */
 interface ValkyrieClient extends Client {
-    cluster: ClusterClient<Client>;
+    cluster?: ClusterClient<Client>;
 }
 
 /**
@@ -27,6 +27,13 @@ interface ValkyrieClient extends Client {
  * - shardCount: Uses getInfo().TOTAL_SHARDS to know the total number of shards
  * - Each instance of the bot (cluster) will handle a subset of the total shards
  */
+let clusterInfo: ReturnType<typeof getInfo> | undefined;
+try {
+    clusterInfo = getInfo();
+} catch {
+    clusterInfo = undefined;
+}
+
 const clientConfig = {
     botGuilds: config.GUILDS,
     intents: [
@@ -36,12 +43,12 @@ const clientConfig = {
         IntentsBitField.Flags.GuildMembers,
     ],
     silent: true,
-    ...(isDev
-        ? {}
-        : {
-              shardCount: getInfo().TOTAL_SHARDS,
-              shards: getInfo().SHARD_LIST,
-          }),
+    ...(clusterInfo
+        ? {
+              shardCount: clusterInfo.TOTAL_SHARDS,
+              shards: clusterInfo.SHARD_LIST,
+          }
+        : {}),
 };
 
 export const client = new Client(clientConfig) as ValkyrieClient;
@@ -100,7 +107,7 @@ async function run() {
         try {
             await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
             await sleep(time);
-            if (!isDev) {
+            if (clusterInfo) {
                 client.cluster = new ClusterClient(client);
                 await sleep(time);
             }
