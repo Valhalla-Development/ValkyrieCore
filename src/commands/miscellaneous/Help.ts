@@ -17,7 +17,7 @@ import {
     SelectMenuComponent,
     Slash,
 } from 'discordx';
-import { capitalise, deletableCheck, getCommandIds } from '../../utils/Util.js';
+import { capitalise, deletableCheck, getCommandIds, ValkyrieComponent } from '../../utils/Util.js';
 
 // Map categories to their emojis
 const categoryEmojis: Record<string, string> = {
@@ -192,23 +192,12 @@ async function handleSelectMenu(
     // Only let the person who ran the command use the dropdown
     const sourceInteraction = interaction.message.interaction;
     if (!sourceInteraction || interaction.user.id !== sourceInteraction.user.id) {
-        const commandLabel = sourceInteraction ? sourceInteraction.commandName : 'help';
-        const errorText = new TextDisplayBuilder().setContent(
-            [
-                '## ⛔ **Access Denied**',
-                '',
-                `> **${client.user?.username} - ${capitalise(commandLabel)}**`,
-                '> 🚫 **Error:** Only the command executor can interact with this menu!',
-                '',
-                '*Run the command yourself to access the help menu*',
-            ].join('\n')
+        await ValkyrieComponent(
+            interaction,
+            'Error',
+            'Only the command executor can interact with this menu!\n\n*Run the command yourself to access the help menu*',
+            true
         );
-
-        const errorContainer = new ContainerBuilder().addTextDisplayComponents(errorText);
-        await interaction.reply({
-            components: [errorContainer],
-            flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
-        });
         return;
     }
 
