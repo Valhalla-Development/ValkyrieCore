@@ -18,7 +18,6 @@ import {
     type UserSelectMenuInteraction,
 } from 'discord.js';
 import type { Client } from 'discordx';
-import '@colors/colors';
 import { config } from '../config/Config.js';
 
 /**
@@ -248,19 +247,6 @@ function flushStatus() {
         type: ActivityType.Watching,
     });
 }
-
-/**
- * Applies a reversed rainbow effect to the input string.
- * @param str - The string to apply the reversed rainbow effect.
- * @returns The input string with reversed rainbow coloring.
- */
-export const reversedRainbow = (str: string): string => {
-    const colors = ['red', 'magenta', 'blue', 'green', 'yellow', 'red'] as const;
-    return str
-        .split('')
-        .map((char, i) => char[colors[i % colors.length] as keyof typeof char])
-        .join('');
-};
 
 /**
  * Resolves a guild text channel by ID, fetching it if it is not in cache.

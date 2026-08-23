@@ -1,7 +1,7 @@
+import colors from '@colors/colors/safe';
+import { Events, OAuth2Scopes, PermissionsBitField, version } from 'discord.js';
 import { type Client, Discord, Once } from 'discordx';
 import si from 'systeminformation';
-import '@colors/colors';
-import { Events, OAuth2Scopes, PermissionsBitField, version } from 'discord.js';
 import { updateStatus } from '../utils/Util.js';
 
 /**
@@ -36,53 +36,66 @@ export class Ready {
             const sections = [
                 {
                     content: [
-                        divider.rainbow.bold,
-                        `${client.user?.username} is online and ready!`.cyan.bold,
-                        divider.rainbow.bold,
+                        colors.bold(colors.rainbow(divider)),
+                        colors.bold(colors.cyan(`${client.user?.username} is online and ready!`)),
+                        colors.bold(colors.rainbow(divider)),
                     ],
                 },
                 {
                     content: [
-                        `${'>>'.red} Users: `.white +
-                            client.guilds.cache
-                                .reduce((acc: number, guild) => acc + guild.memberCount, 0)
-                                .toLocaleString('en').red,
-                        `${'>>'.green} Guilds: `.white +
-                            client.guilds.cache.size.toLocaleString('en').green,
-                        `${'>>'.yellow} Slash Commands: `.white +
-                            `${client.application?.commands.cache.size ?? 0}`.yellow,
-                        `${'>>'.blue} Events: `.white + client.eventNames().length.toString().blue,
+                        colors.white(`${colors.red('>>')} Users: `) +
+                            colors.red(
+                                client.guilds.cache
+                                    .reduce((acc: number, guild) => acc + guild.memberCount, 0)
+                                    .toLocaleString('en')
+                            ),
+                        colors.white(`${colors.green('>>')} Guilds: `) +
+                            colors.green(client.guilds.cache.size.toLocaleString('en')),
+                        colors.white(`${colors.yellow('>>')} Slash Commands: `) +
+                            colors.yellow(`${client.application?.commands.cache.size ?? 0}`),
+                        colors.white(`${colors.blue('>>')} Events: `) +
+                            colors.blue(client.eventNames().length.toString()),
                     ],
                     title: `${client.user?.username} Stats`,
                 },
                 {
                     content: [
-                        `${`${'>>'.magenta} Node: `.white}${process.version.magenta}${' on '.white}${`${process.platform} ${process.arch}`.magenta}`,
-                        `${'>>'.cyan} Memory: `.white +
-                            `${realMemUsed.toLocaleString('en')}/${totalMemory.toLocaleString('en')} MB`
-                                .cyan,
-                        `${'>>'.red} CPU: `.white + `${cpu.vendor} ${cpu.brand}`.red,
-                        `${'>>'.yellow} Discord.js: `.white + `v${version}`.yellow,
-                        `${'>>'.blue} Version: `.white + `v${process.env.npm_package_version}`.blue,
+                        colors.white(`${colors.magenta('>>')} Node: `) +
+                            colors.magenta(process.version) +
+                            colors.white(' on ') +
+                            colors.magenta(`${process.platform} ${process.arch}`),
+                        colors.white(`${colors.cyan('>>')} Memory: `) +
+                            colors.cyan(
+                                `${realMemUsed.toLocaleString('en')}/${totalMemory.toLocaleString('en')} MB`
+                            ),
+                        colors.white(`${colors.red('>>')} CPU: `) +
+                            colors.red(`${cpu.vendor} ${cpu.brand}`),
+                        colors.white(`${colors.yellow('>>')} Discord.js: `) +
+                            colors.yellow(`v${version}`),
+                        colors.white(`${colors.blue('>>')} Version: `) +
+                            colors.blue(`v${process.env.npm_package_version}`),
                     ],
                     title: `${client.user?.username} Specs`,
                 },
                 {
-                    content: [`${'>>'.blue} `.white + inviteUrl.blue.underline],
+                    content: [
+                        colors.white(`${colors.blue('>>')} `) +
+                            colors.underline(colors.blue(inviteUrl)),
+                    ],
                     title: `${client.user?.username} Invite Link`,
                 },
             ];
 
-            console.log(`\n${'='.repeat(50).bold}`);
+            console.log(`\n${colors.bold('='.repeat(50))}`);
             for (const section of sections) {
                 if (section.title) {
-                    console.log(`\n>>> ${section.title} <<<`.magenta.bold);
+                    console.log(colors.bold(colors.magenta(`\n>>> ${section.title} <<<`)));
                 }
                 for (const line of section.content) {
-                    console.log(`${line}`.bold);
+                    console.log(colors.bold(line));
                 }
             }
-            console.log(`${'='.repeat(50).bold}`);
+            console.log(colors.bold('='.repeat(50)));
         }
 
         await logStartup();

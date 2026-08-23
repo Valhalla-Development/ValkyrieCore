@@ -1,7 +1,23 @@
+import colors from '@colors/colors/safe';
 import { ChannelType, codeBlock, Events, MessageFlags } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import { config } from '../config/Config.js';
-import { getTextChannel, handleError, reversedRainbow, ValkyrieContainer } from '../utils/Util.js';
+import { getTextChannel, handleError, ValkyrieContainer } from '../utils/Util.js';
+
+const rainbowColors = [
+    colors.red,
+    colors.magenta,
+    colors.blue,
+    colors.green,
+    colors.yellow,
+    colors.red,
+] as const;
+
+const reversedRainbow = (str: string): string =>
+    str
+        .split('')
+        .map((char, i) => (rainbowColors[i % rainbowColors.length] ?? colors.red)(char))
+        .join('');
 
 @Discord()
 export class InteractionCreate {
@@ -57,9 +73,9 @@ export class InteractionCreate {
 
             // Console logging
             console.log(
-                `${'◆◆◆◆◆◆'.rainbow.bold} ${timestamp} ${reversedRainbow('◆◆◆◆◆◆')}\n` +
-                    `${'🔧 Command:'.brightBlue.bold} ${executedCommand.brightYellow.bold}\n` +
-                    `${'🔍 Executor:'.brightBlue.bold} ${interaction.user.displayName.underline.brightMagenta.bold} ${'('.gray.bold}${'Guild: '.brightBlue.bold}${interaction.guild.name.underline.brightMagenta.bold}${')'}`
+                `${colors.bold(colors.rainbow('◆◆◆◆◆◆'))} ${timestamp} ${reversedRainbow('◆◆◆◆◆◆')}\n` +
+                    `${colors.bold(colors.brightBlue('🔧 Command:'))} ${colors.bold(colors.brightYellow(executedCommand))}\n` +
+                    `${colors.bold(colors.brightBlue('🔍 Executor:'))} ${colors.bold(colors.brightMagenta(colors.underline(interaction.user.displayName)))} ${colors.bold(colors.gray('('))}${colors.bold(colors.brightBlue('Guild: '))}${colors.bold(colors.brightMagenta(colors.underline(interaction.guild.name)))})`
             );
 
             const logContainer = ValkyrieContainer(
