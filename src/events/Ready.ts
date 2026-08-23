@@ -35,7 +35,6 @@ export class Ready {
                     ],
                 },
                 {
-                    title: `${client.user?.username} Stats`,
                     content: [
                         `${'>>'.red} Users: `.white +
                             client.guilds.cache
@@ -47,9 +46,9 @@ export class Ready {
                             `${client.application?.commands.cache.size ?? 0}`.yellow,
                         `${'>>'.blue} Events: `.white + client.eventNames().length.toString().blue,
                     ],
+                    title: `${client.user?.username} Stats`,
                 },
                 {
-                    title: `${client.user?.username} Specs`,
                     content: [
                         `${`${'>>'.magenta} Node: `.white}${process.version.magenta}${' on '.white}${`${process.platform} ${process.arch}`.magenta}`,
                         `${'>>'.cyan} Memory: `.white +
@@ -59,14 +58,15 @@ export class Ready {
                         `${'>>'.yellow} Discord.js: `.white + `v${version}`.yellow,
                         `${'>>'.blue} Version: `.white + `v${process.env.npm_package_version}`.blue,
                     ],
+                    title: `${client.user?.username} Specs`,
                 },
                 {
-                    title: `${client.user?.username} Invite Link`,
                     content: [
                         `${'>>'.blue} `.white +
                             `https://discordapp.com/oauth2/authorize?client_id=${client.user?.id}&scope=bot%20applications.commands&permissions=535327927376`
                                 .blue.underline,
                     ],
+                    title: `${client.user?.username} Invite Link`,
                 },
             ];
 

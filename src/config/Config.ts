@@ -2,21 +2,22 @@ import { z } from 'zod';
 
 // Helper transforms for common patterns
 const stringToBoolean = (val: string): boolean => val.toLowerCase() === 'true';
-const stringToArray = (val: string): string[] => {
-    return val
+const stringToArray = (val: string): string[] =>
+    val
         ? val
               .split(',')
               .map((s) => s.trim())
               .filter(Boolean)
         : [];
-};
 
 const configSchema = z.object({
     // Required bot token
     BOT_TOKEN: z.string().min(1, 'Bot token is required'),
+    COMMAND_LOGGING_CHANNEL: z.string().optional(),
 
-    // Environment (defaults to development)
-    NODE_ENV: z.enum(['development', 'production']).default('development'),
+    // Logging settings
+    ENABLE_LOGGING: z.string().optional().default('false').transform(stringToBoolean),
+    ERROR_LOGGING_CHANNEL: z.string().optional(),
 
     // Optional comma-separated guild IDs (undefined = global, string[] = guild-specific)
     GUILDS: z
@@ -24,10 +25,8 @@ const configSchema = z.object({
         .optional()
         .transform((val) => (val ? stringToArray(val) : undefined)),
 
-    // Logging settings
-    ENABLE_LOGGING: z.string().optional().default('false').transform(stringToBoolean),
-    ERROR_LOGGING_CHANNEL: z.string().optional(),
-    COMMAND_LOGGING_CHANNEL: z.string().optional(),
+    // Environment (defaults to development)
+    NODE_ENV: z.enum(['development', 'production']).default('development'),
 });
 
 // Parse config with error handling
@@ -49,7 +48,7 @@ try {
             .map((issue) => issue.path[0])
             .join(', ');
 
-        throw new Error(`Missing required environment variables: ${missingVars}`);
+        throw new Error(`Missing required environment variables: ${missingVars}`, { cause: error });
     }
     throw error;
 }

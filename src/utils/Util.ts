@@ -78,9 +78,9 @@ export async function getCommandIds(
  */
 export function updateStatus(client: Client) {
     client.user?.setActivity({
-        type: ActivityType.Watching,
         name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
             ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+        type: ActivityType.Watching,
     });
 }
 

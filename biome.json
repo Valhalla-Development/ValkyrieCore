@@ -1,6 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
-  "extends": ["ultracite"],
+  "$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
+  "extends": ["ultracite/biome/core"],
   "linter": {
     "rules": {
       "suspicious": {
@@ -33,7 +33,8 @@
   "javascript": {
     "formatter": {
       "indentWidth": 4,
-      "lineWidth": 100
+      "lineWidth": 100,
+      "quoteStyle": "single"
     }
   }
 }

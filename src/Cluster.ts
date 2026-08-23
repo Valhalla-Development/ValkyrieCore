@@ -19,11 +19,11 @@ const dir = dirname(import.meta.url);
  * - Cluster 1: Handles shards 2 and 3
  */
 const manager = new ClusterManager(`${dir}/Main.ts`, {
-    totalShards: 'auto',
-    totalClusters: 'auto',
-    shardsPerClusters: 2,
     mode: 'worker',
+    shardsPerClusters: 2,
     token: config.BOT_TOKEN,
+    totalClusters: 'auto',
+    totalShards: 'auto',
 });
 
 // Event fired when a new cluster is created

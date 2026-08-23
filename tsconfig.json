@@ -17,7 +17,6 @@
     "verbatimModuleSyntax": true,                /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
     "outDir": "./build",                         /* Specify an output folder for all emitted files. */
     "rootDir": "src",                            /* Specify the root folder within your source files. */
-    "baseUrl": "./src",                          /* Specify the base directory to resolve non-relative module names. */
     "noEmit": true                               /* Disable emitting files from a compilation. */
   },
   "include": ["src/**/*.ts"],
