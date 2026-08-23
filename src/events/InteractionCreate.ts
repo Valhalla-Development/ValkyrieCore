@@ -1,6 +1,5 @@
 import { ChannelType, codeBlock, Events, MessageFlags } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
-import moment from 'moment';
 import { config } from '../config/Config.js';
 import { getTextChannel, handleError, reversedRainbow, ValkyrieContainer } from '../utils/Util.js';
 
@@ -48,10 +47,17 @@ export class InteractionCreate {
             const now = Date.now();
             const nowInSeconds = Math.floor(now / 1000);
             const executedCommand = interaction.toString();
+            const timestamp = new Intl.DateTimeFormat('en-US', {
+                day: 'numeric',
+                hour: 'numeric',
+                hour12: true,
+                minute: '2-digit',
+                month: 'short',
+            }).format(now);
 
             // Console logging
             console.log(
-                `${'◆◆◆◆◆◆'.rainbow.bold} ${moment(now).format('MMM D, h:mm A')} ${reversedRainbow('◆◆◆◆◆◆')}\n` +
+                `${'◆◆◆◆◆◆'.rainbow.bold} ${timestamp} ${reversedRainbow('◆◆◆◆◆◆')}\n` +
                     `${'🔧 Command:'.brightBlue.bold} ${executedCommand.brightYellow.bold}\n` +
                     `${'🔍 Executor:'.brightBlue.bold} ${interaction.user.displayName.underline.brightMagenta.bold} ${'('.gray.bold}${'Guild: '.brightBlue.bold}${interaction.guild.name.underline.brightMagenta.bold}${')'}`
             );

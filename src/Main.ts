@@ -1,8 +1,7 @@
 import { dirname, importx } from '@discordx/importer';
 import { IntentsBitField } from 'discord.js';
-import { Client } from 'discordx';
-import 'dotenv/config';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
+import { Client } from 'discordx';
 import { config } from './config/Config.js';
 import { handleError } from './utils/Util.js';
 
