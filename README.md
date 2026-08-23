@@ -39,7 +39,7 @@ This project provides a solid foundation for creating a Discord bot using [disco
   <tr>
     <td width="50%">
       <h3>📝 Command Logging</h3>
-      <p>Track command usage with formatted embeds sent to your designated channel.</p>
+      <p>Track command usage with Components V2 cards sent to your designated channel.</p>
     </td>
     <td width="50%">
       <h3>🔄 Hybrid Sharding</h3>
