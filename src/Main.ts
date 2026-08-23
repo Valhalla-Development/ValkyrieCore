@@ -47,7 +47,7 @@ const clientConfig = {
 export const client = new Client(clientConfig) as ValkyrieClient;
 
 /**
- * Handles unhandled rejections by logging the error and sending an embed to a designated logging channel, if enabled.
+ * Handles unhandled rejections by logging the error and sending a component to a designated logging channel, if enabled.
  * @param error - The error that was not handled.
  * @returns void
  */
@@ -56,7 +56,7 @@ process.on('unhandledRejection', async (error) => {
 });
 
 /**
- * Handles uncaught exception by logging the error and sending an embed to a designated logging channel, if enabled.
+ * Handles uncaught exception by logging the error and sending a component to a designated logging channel, if enabled.
  * @param error - The error that was not handled.
  * @returns void
  */

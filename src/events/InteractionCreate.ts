@@ -1,8 +1,8 @@
-import { ChannelType, codeBlock, EmbedBuilder, Events } from 'discord.js';
+import { ChannelType, codeBlock, Events, MessageFlags } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import moment from 'moment';
 import { config } from '../config/Config.js';
-import { handleError, reversedRainbow } from '../utils/Util.js';
+import { handleError, reversedRainbow, ValkyrieContainer } from '../utils/Util.js';
 
 @Discord()
 export class InteractionCreate {
@@ -56,22 +56,28 @@ export class InteractionCreate {
                     `${'🔍 Executor:'.brightBlue.bold} ${interaction.user.displayName.underline.brightMagenta.bold} ${'('.gray.bold}${'Guild: '.brightBlue.bold}${interaction.guild.name.underline.brightMagenta.bold}${')'}`
             );
 
-            // Embed logging
-            const logEmbed = new EmbedBuilder()
-                .setColor('#e91e63')
-                .setTitle('Command Executed')
-                .addFields(
-                    { inline: true, name: '👤 User', value: `${interaction.user}` },
-                    { inline: true, name: '📅 Date', value: `<t:${nowInSeconds}:F>` },
-                    { inline: true, name: '📰 Interaction', value: link },
-                    { name: '🖥️ Command', value: codeBlock('kotlin', executedCommand) }
-                );
+            const logContainer = ValkyrieContainer(
+                'Command Executed',
+                [
+                    `**👤 User:** ${interaction.user}`,
+                    `**📅 Date:** <t:${nowInSeconds}:F>`,
+                    `**📰 Interaction:** ${link}`,
+                    '',
+                    `**🖥️ Command**\n${codeBlock('kotlin', executedCommand)}`,
+                ].join('\n')
+            );
 
             // Channel logging
             if (config.COMMAND_LOGGING_CHANNEL) {
                 const channel = client.channels.cache.get(config.COMMAND_LOGGING_CHANNEL);
                 if (channel?.type === ChannelType.GuildText) {
-                    channel.send({ embeds: [logEmbed] }).catch(console.error);
+                    channel
+                        .send({
+                            allowedMentions: { parse: [] },
+                            components: [logContainer],
+                            flags: MessageFlags.IsComponentsV2,
+                        })
+                        .catch(console.error);
                 }
             }
         }

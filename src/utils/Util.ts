@@ -5,14 +5,15 @@ import {
     type CommandInteraction,
     ContainerBuilder,
     codeBlock,
-    EmbedBuilder,
     type Message,
     MessageFlags,
     type ModalSubmitInteraction,
+    SectionBuilder,
     SeparatorSpacingSize,
     type StringSelectMenuInteraction,
     type TextChannel,
     TextDisplayBuilder,
+    ThumbnailBuilder,
     type UserSelectMenuInteraction,
 } from 'discord.js';
 import type { Client } from 'discordx';
@@ -90,6 +91,42 @@ export async function ValkyrieComponent(
     } catch (error) {
         console.error('Error sending component response:', error);
     }
+}
+
+/**
+ * Builds a Components V2 container with a title and body text.
+ * If the body contains a `**Avatar:** https://...` line, that URL is shown as a thumbnail.
+ * @param title - Heading shown at the top of the container.
+ * @param body - Markdown body content.
+ */
+export function ValkyrieContainer(title: string, body: string): ContainerBuilder {
+    const header = new TextDisplayBuilder().setContent(`# ${title}`);
+    const lines = body.split('\n');
+    const avatarLineIndex = lines.findIndex((line) => line.startsWith('**Avatar:**'));
+    const avatarUrlRaw =
+        avatarLineIndex >= 0 ? lines[avatarLineIndex]?.replace('**Avatar:**', '').trim() : null;
+    const avatarUrl = avatarUrlRaw && /^https?:\/\//.test(avatarUrlRaw) ? avatarUrlRaw : null;
+
+    if (avatarLineIndex >= 0 && avatarUrl) {
+        lines.splice(avatarLineIndex, 1);
+    }
+
+    const contentText = lines.join('\n').trim();
+    const content = new TextDisplayBuilder().setContent(contentText.length > 0 ? contentText : '-');
+
+    const container = new ContainerBuilder()
+        .addTextDisplayComponents(header)
+        .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small));
+
+    if (avatarUrl) {
+        const section = new SectionBuilder()
+            .addTextDisplayComponents(content)
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(avatarUrl));
+        container.addSectionComponents(section);
+        return container;
+    }
+
+    return container.addTextDisplayComponents(content);
 }
 
 /**
@@ -215,13 +252,13 @@ export async function handleError(client: Client, error: unknown): Promise<void>
             codeBlock('js', errorStack),
         ].join('\n');
 
-        const embed = new EmbedBuilder()
-            .setTitle('Error')
-            .setDescription(truncateDescription(fullString))
-            .setColor('#FF0000');
-
-        await channel.send({ embeds: [embed] });
+        const container = ValkyrieContainer('Error', truncateDescription(fullString));
+        await channel.send({
+            allowedMentions: { parse: [] },
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+        });
     } catch (sendError) {
-        console.error('Failed to send the error embed:', sendError);
+        console.error('Failed to send the error component message:', sendError);
     }
 }
