@@ -2,6 +2,7 @@ import colors from '@colors/colors/safe';
 import { Events, OAuth2Scopes, PermissionsBitField, version } from 'discord.js';
 import { type Client, Discord, Once } from 'discordx';
 import si from 'systeminformation';
+import { version as botVersion } from '../../package.json' with { type: 'json' };
 import { updateStatus } from '../utils/Util.js';
 
 /**
@@ -73,7 +74,7 @@ export class Ready {
                         colors.white(`${colors.yellow('>>')} Discord.js: `) +
                             colors.yellow(`v${version}`),
                         colors.white(`${colors.blue('>>')} Version: `) +
-                            colors.blue(`v${process.env.npm_package_version}`),
+                            colors.blue(`v${botVersion}`),
                     ],
                     title: `${client.user?.username} Specs`,
                 },
