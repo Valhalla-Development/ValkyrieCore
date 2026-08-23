@@ -190,12 +190,14 @@ async function handleSelectMenu(
     selectMenu: StringSelectMenuBuilder
 ) {
     // Only let the person who ran the command use the dropdown
-    if (interaction.user.id !== interaction.message.interaction?.user.id) {
+    const sourceInteraction = interaction.message.interaction;
+    if (!sourceInteraction || interaction.user.id !== sourceInteraction.user.id) {
+        const commandLabel = sourceInteraction ? sourceInteraction.commandName : 'help';
         const errorText = new TextDisplayBuilder().setContent(
             [
                 '## ⛔ **Access Denied**',
                 '',
-                `> **${client.user?.username} - ${capitalise(interaction.message.interaction?.commandName ?? '')}**`,
+                `> **${client.user?.username} - ${capitalise(commandLabel)}**`,
                 '> 🚫 **Error:** Only the command executor can interact with this menu!',
                 '',
                 '*Run the command yourself to access the help menu*',
