@@ -1,10 +1,19 @@
 import {
     ActivityType,
+    type ButtonInteraction,
     ChannelType,
+    type CommandInteraction,
+    ContainerBuilder,
     codeBlock,
     EmbedBuilder,
     type Message,
+    MessageFlags,
+    type ModalSubmitInteraction,
+    SeparatorSpacingSize,
+    type StringSelectMenuInteraction,
     type TextChannel,
+    TextDisplayBuilder,
+    type UserSelectMenuInteraction,
 } from 'discord.js';
 import type { Client } from 'discordx';
 import '@colors/colors';
@@ -26,6 +35,61 @@ export function deletableCheck(message: Message, time: number): void {
     setTimeout(() => {
         message.delete().catch((error) => console.error('Error deleting message:', error));
     }, time);
+}
+
+/**
+ * Creates and sends a Components V2 message in response to an interaction.
+ * @param interaction - The interaction that triggered the function.
+ * @param type - Label shown in the header (Error, Success, Warn, Info, …).
+ * @param content - The body of the message.
+ * @param ephemeral - Whether the response should be ephemeral.
+ */
+export async function ValkyrieComponent(
+    interaction:
+        | CommandInteraction
+        | ButtonInteraction
+        | StringSelectMenuInteraction
+        | ModalSubmitInteraction
+        | UserSelectMenuInteraction,
+    type: string,
+    content: string,
+    ephemeral = false
+): Promise<void> {
+    const lowerType = type.toLowerCase();
+    const typeEmoji =
+        lowerType.includes('error') || lowerType.includes('fail')
+            ? '⛔'
+            : lowerType.includes('warn')
+              ? '⚠️'
+              : lowerType.includes('success')
+                ? '✅'
+                : 'ℹ️';
+
+    const tagLine = new TextDisplayBuilder().setContent(`**${typeEmoji} ${type}**`);
+    const contentLine = new TextDisplayBuilder().setContent(content);
+    const container = new ContainerBuilder()
+        .addTextDisplayComponents(tagLine)
+        .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(contentLine);
+
+    try {
+        if (interaction.deferred) {
+            await interaction.editReply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2,
+            });
+            return;
+        }
+
+        await interaction.reply({
+            components: [container],
+            flags: ephemeral
+                ? [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+                : MessageFlags.IsComponentsV2,
+        });
+    } catch (error) {
+        console.error('Error sending component response:', error);
+    }
 }
 
 /**
