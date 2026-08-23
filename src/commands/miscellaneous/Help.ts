@@ -201,7 +201,7 @@ async function handleSelectMenu(
         return;
     }
 
-    const selectedValue = interaction.values?.[0];
+    const [selectedValue] = interaction.values;
     if (!selectedValue) {
         return deletableCheck(interaction.message, 0);
     }
