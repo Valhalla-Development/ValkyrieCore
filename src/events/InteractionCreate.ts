@@ -1,5 +1,5 @@
 import colors from '@colors/colors/safe';
-import { ChannelType, codeBlock, Events, MessageFlags } from 'discord.js';
+import { codeBlock, Events, MessageFlags } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import { config } from '../config/Config.js';
 import { getTextChannel, handleError, ValkyrieContainer } from '../utils/Util.js';
@@ -28,14 +28,14 @@ export class InteractionCreate {
      */
     @On({ event: Events.InteractionCreate })
     async onInteraction([interaction]: ArgsOf<'interactionCreate'>, client: Client) {
-        // Check if the interaction is in a guild and in a guild text channel, and is either a string select menu or a chat input command.
+        // Check if the interaction is in a guild text-based channel, and is a select menu, slash command, or context menu.
         if (
-            !(interaction.guild && interaction.channel) ||
-            interaction.channel.type !== ChannelType.GuildText ||
             !(
-                interaction.isStringSelectMenu() ||
-                interaction.isChatInputCommand() ||
-                interaction.isContextMenuCommand()
+                interaction.guild &&
+                interaction.channel?.isTextBased() &&
+                (interaction.isStringSelectMenu() ||
+                    interaction.isChatInputCommand() ||
+                    interaction.isContextMenuCommand())
             )
         ) {
             return;
