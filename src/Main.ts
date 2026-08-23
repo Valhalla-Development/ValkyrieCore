@@ -33,6 +33,7 @@ const clientConfig = {
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
+        IntentsBitField.Flags.GuildMembers,
     ],
     silent: true,
     ...(isDev
