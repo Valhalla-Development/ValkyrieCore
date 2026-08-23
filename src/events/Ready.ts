@@ -1,7 +1,7 @@
 import { type Client, Discord, Once } from 'discordx';
 import si from 'systeminformation';
 import '@colors/colors';
-import { Events, version } from 'discord.js';
+import { Events, OAuth2Scopes, PermissionsBitField, version } from 'discord.js';
 import { updateStatus } from '../utils/Util.js';
 
 /**
@@ -26,6 +26,13 @@ export class Ready {
             const realMemUsed = Math.floor((memory.used - memory.buffcache) / 1024 / 1024);
 
             const divider = '*~'.repeat(20);
+            const inviteUrl = client.generateInvite({
+                permissions: [
+                    PermissionsBitField.Flags.ViewChannel,
+                    PermissionsBitField.Flags.SendMessages,
+                ],
+                scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
+            });
             const sections = [
                 {
                     content: [
@@ -61,11 +68,7 @@ export class Ready {
                     title: `${client.user?.username} Specs`,
                 },
                 {
-                    content: [
-                        `${'>>'.blue} `.white +
-                            `https://discordapp.com/oauth2/authorize?client_id=${client.user?.id}&scope=bot%20applications.commands&permissions=535327927376`
-                                .blue.underline,
-                    ],
+                    content: [`${'>>'.blue} `.white + inviteUrl.blue.underline],
                     title: `${client.user?.username} Invite Link`,
                 },
             ];
